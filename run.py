@@ -17,9 +17,13 @@ reservations = SHEET.worksheet("reservations")
 
 class ReservationManager:
     def __init__(self):
-        self.worksheet = reservations
+        # Assign the 'reservations' worksheet to an instance variable for later use
+        self.worksheet = reservations 
+        # Fetch all data (including headers) from the worksheet as a list of lists
         data = self.worksheet.get_all_values()
+         # Convert the 'Date' column to datetime format
         self.reservations['Date'] = pd.to_datetime(self.reservations['Date'], format="%d-%m-%Y", errors='coerce')
+        # Convert the 'Time' column to time format
         self.reservations["Time"] = pd.to_datetime(self.reservations["Time"], format="%H:%M", errors='coerce').dt.time
 
     def save_reservations():
