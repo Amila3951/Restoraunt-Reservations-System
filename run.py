@@ -16,7 +16,11 @@ SHEET = GSPREAD_CLIENT.open("ReservationManager")
 reservations = SHEET.worksheet("reservations")
 
 class ReservationManager:
-    def __init__():
+    def __init__(self):
+        self.worksheet = reservations
+        data = self.worksheet.get_all_values()
+        self.reservations['Date'] = pd.to_datetime(self.reservations['Date'], format="%d-%m-%Y", errors='coerce')
+        self.reservations["Time"] = pd.to_datetime(self.reservations["Time"], format="%H:%M", errors='coerce').dt.time
 
     def save_reservations():
 
@@ -27,3 +31,4 @@ class ReservationManager:
     def search_reservations():
 
 def main():
+    reservation_manager = ReservationManager()
