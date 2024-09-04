@@ -27,6 +27,24 @@ class ReservationManager:
         self.reservations["Time"] = pd.to_datetime(self.reservations["Time"], format="%H:%M", errors='coerce').dt.time
 
     def save_reservations():
+        # Create a copy of the reservations DataFrame to avoid modifying the original
+        reservations_to_save = self.reservations.copy()
+        # Check if the 'Date' column is already in datetime format
+    if not pd.api.types.is_datetime64_any_dtype(reservations_to_save['Date']):  
+        # If not, convert the 'Date' column to datetime, handling potential errors
+        reservations_to_save['Date'] = pd.to_datetime(reservations_to_save['Date'], errors='coerce')
+        # Format the 'Date' column to a string in the desired format (DD-MM-YYYY)
+    reservations_to_save['Date'] = reservations_to_save['Date'].dt.strftime('%d-%m-%Y')
+    # Format the 'Time' column to a string in the desired format (HH:MM) if it's not null, otherwise set it to an empty string
+    reservations_to_save['Time'] = reservations_to_save['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '') 
+    # Replace any NaN values in the DataFrame with empty strings
+    reservations_to_save.fillna('', inplace=True)  
+    # Update the Google Sheet with the modified DataFrame, including column headers
+    self.worksheet.update(
+        # Start updating from cell A1
+        range_name='A1',  
+        values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist() 
+    )
 
     def add_reservation():
 
