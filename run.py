@@ -15,3 +15,15 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("ReservationManager")
 reservations = SHEET.worksheet("reservations")
 
+class ReservationManager:
+    def __init__():
+
+    def save_reservations():
+
+    def add_reservation():
+
+    def view_reservations():
+
+    def search_reservations():
+
+def main():
