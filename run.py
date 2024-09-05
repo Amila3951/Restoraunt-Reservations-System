@@ -179,7 +179,7 @@ class ReservationManager:
         
 def main():
     reservation_manager = ReservationManager()
-
+    # Infinite loop that runs until the user chooses the exit option
     while True:
         print("\nRestaurant Reservation System")
         print("1. Add Reservation")
@@ -187,9 +187,8 @@ def main():
         print("3. Search Reservations")
         print("4. Delete Reservation")
         print("5. Exit")
-
+        # Takes input from the user - their choice of option from the menu
         choice = input("Enter your choice: ")
-
         if choice == "1":
             reservation_manager.add_reservation()
         elif choice == "2":
@@ -198,10 +197,13 @@ def main():
             reservation_manager.search_reservations()
         elif choice == "4":
             reservation_manager.delete_reservation()
+        # Exits the loop (and the program) if the user enters "5"
         elif choice == "5":
             break
+        # Prints an error message if the user enters an invalid choice
         else:
             print("Invalid choice. Please enter a number between 1 and 5.")
-
+#Checks if the script is being run as the main program
 if __name__ == "__main__":
+    # Starts the main function of the program if the condition is met
     main()
