@@ -130,7 +130,27 @@ class ReservationManager:
             # Print the sorted reservations, displaying only the 'Index', 'Name', 'Date', 'Time', and 'Number of Guests' columns
             print(sorted_reservations[["Index", "Name", "Date", "Time", "Number of Guests"]].to_string(index=False))
 
-    def search_reservations():
+    def search_reservations(self):
+        name = input("Enter the name to search for: ")
+        # Filter reservations where the 'Name' column contains the entered name (case-insensitive)
+        matching_reservations = self.reservations[
+            self.reservations["Name"].str.contains(name, case=False)
+        ].copy()
+        # Check if the 'Date' column in the filtered reservations is already in datetime format
+        if not pd.api.types.is_datetime64_any_dtype(matching_reservations['Date']):
+            # If not, convert the 'Date' column to datetime, handling potential errors
+            matching_reservations['Date'] = pd.to_datetime(matching_reservations['Date'], format="%d-%m-%Y", errors='coerce')
+        # Check if any matching reservations were found
+        if matching_reservations.empty:
+            # If no matches, print a message indicating so
+            print("No reservations found matching the criteria.")
+        else:
+            # Format the 'Date' column to a string representation in the format 'DD-MM-YYYY'
+            matching_reservations['Date'] = matching_reservations['Date'].dt.strftime('%d-%m-%Y')
+            # Format the 'Time' column to a string representation in the format 'HH:MM' if it's not null, otherwise leave it as an empty string
+            matching_reservations['Time'] = matching_reservations['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
+            # Print the matching reservations, displaying only the 'Name', 'Date', 'Time', and 'Number of Guests' columns
+            print(matching_reservations[['Name', 'Date', 'Time', 'Number of Guests']].to_string(index=False))
 
 def main():
     reservation_manager = ReservationManager()
