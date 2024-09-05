@@ -1,6 +1,10 @@
+# Import the pandas library for working with DataFrames (tabular data structures)
 import pandas as pd
+ # Import the datetime library for handling dates and times
 import datetime
+ # Import the gspread library for interacting with Google Sheets API
 import gspread
+# Import the Credentials class
 from google.oauth2.service_account import Credentials
 
 SCOPE = [
@@ -47,6 +51,66 @@ class ReservationManager:
     )
 
     def add_reservation():
+        while True:
+            name = input("Enter name: ")
+            # Check if the entered name already exists in the reservations
+            if name.lower() in self.reservations["Name"].str.lower().values:
+                print("A reservation with this name already exists. Please enter a different name.")
+            else:
+                break
+
+        while True:
+            try:
+                date_str = input("Enter reservation date (DD-MM-YYYY): ")
+                date = datetime.datetime.strptime(date_str, "%d-%m-%Y").date()
+                # Check if the entered date is in the past
+                if date < datetime.date.today():
+                    raise ValueError("Reservation date cannot be in the past.")
+                break
+            except ValueError as e:
+                # Print an error message if the date is invalid or in the past
+                print(f"Invalid date format or past date: {e}")
+
+        while True:
+                try:
+                    time_str = input("Enter reservation time (HH:MM): ")
+                    time = datetime.datetime.strptime(time_str, "%H:%M").time()
+                    # Check if the entered time is within operating hours (8:00 AM to 10:00 PM)
+                    if time < datetime.time(8, 0) or time > datetime.time(22, 0):
+                        raise ValueError("Our hours of operation are from 8:00 AM to 10:00 PM. Please select a reservation time within this range.")
+                    break
+                except ValueError as e:
+                    # Print an error message if the time is invalid or outside operating hours
+                    print(f"Invalid time format or outside operating hours: {e}")
+
+        while True:
+            try:
+                number_of_guests = int(input("Enter number of guests: "))
+                 # Check if the entered number of guests is positive
+                if number_of_guests <= 0:
+                    raise ValueError("Number of guests must be positive.")
+                break
+            except ValueError as e:
+                # Print an error message if the number of guests is invalid or not positive
+                print(f"Invalid number: {e}")
+
+        columns = self.reservations.columns.tolist()
+        new_reservation = pd.DataFrame(
+            {
+                "Name": [name],
+                "Date": [date],
+                "Time": [time],
+                "Number of Guests": [number_of_guests],
+            },
+            # Ensure the new DataFrame has the same column names as the existing one
+            columns=columns
+        )
+         # Convert the 'Date' column in the new reservation DataFrame to datetime format
+        new_reservation['Date'] = pd.to_datetime(new_reservation['Date']) 
+        # Append the new reservation to the existing reservations DataFrame
+        self.reservations = pd.concat([self.reservations, new_reservation], ignore_index=True)
+        self.save_reservations()
+        print("Reservation added successfully!")
 
     def view_reservations():
 
