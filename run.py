@@ -50,7 +50,7 @@ class ReservationManager:
         values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist() 
     )
 
-    def add_reservation():
+    def add_reservation(self):
         while True:
             name = input("Enter name: ")
             # Check if the entered name already exists in the reservations
@@ -112,7 +112,23 @@ class ReservationManager:
         self.save_reservations()
         print("Reservation added successfully!")
 
-    def view_reservations():
+    def view_reservations(self):
+        if self.reservations.empty:
+            print("No reservations found.")
+        else:
+            if not pd.api.types.is_datetime64_any_dtype(self.reservations['Date']):
+                # Check if the 'Date' column is already in datetime format, if not, convert it
+                self.reservations['Date'] = pd.to_datetime(self.reservations['Date'], format="%d-%m-%Y", errors='coerce')
+            # Sort the reservations DataFrame by 'Date' and 'Time' in ascending order
+            sorted_reservations = self.reservations.sort_values(["Date", "Time"], ascending=[True, True])
+             # Insert a new column 'Index' at the beginning, starting from 1 and incrementing for each row
+            sorted_reservations.insert(0, 'Index', range(1, len(sorted_reservations) + 1))
+             # Format the 'Date' column to a string representation in the format 'DD-MM-YYYY'
+            sorted_reservations['Date'] = sorted_reservations['Date'].dt.strftime('%d-%m-%Y')
+             # Format the 'Time' column to a string representation in the format 'HH:MM' if it's not null, otherwise leave it as an empty string
+            sorted_reservations['Time'] = sorted_reservations['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
+            # Print the sorted reservations, displaying only the 'Index', 'Name', 'Date', 'Time', and 'Number of Guests' columns
+            print(sorted_reservations[["Index", "Name", "Date", "Time", "Number of Guests"]].to_string(index=False))
 
     def search_reservations():
 
