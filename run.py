@@ -151,6 +151,18 @@ class ReservationManager:
             matching_reservations['Time'] = matching_reservations['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
             # Print the matching reservations, displaying only the 'Name', 'Date', 'Time', and 'Number of Guests' columns
             print(matching_reservations[['Name', 'Date', 'Time', 'Number of Guests']].to_string(index=False))
+    
+        def delete_reservation(self):
+            self.view_reservations()
+            name_to_delete = input("Enter the name of the reservation to delete: ")
+            matching_reservations = self.reservations[self.reservations["Name"].str.lower() == name_to_delete.lower()]
+            if matching_reservations.empty:
+                print("No reservations found matching the criteria.")
+            else:
+                self.reservations = self.reservations.drop(matching_reservations.index).reset_index(drop=True)
+                self.save_reservations()
+                print(f"Deleted {len(matching_reservations)} reservation(s) for {name_to_delete}")
+
 
 def main():
     reservation_manager = ReservationManager()
