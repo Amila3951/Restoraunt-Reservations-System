@@ -22,33 +22,37 @@ reservations = SHEET.worksheet("reservations")
 class ReservationManager:
     def __init__(self):
         # Assign the 'reservations' worksheet to an instance variable for later use
-        self.worksheet = reservations 
+        self.worksheet = reservations
         # Fetch all data (including headers) from the worksheet as a list of lists
         data = self.worksheet.get_all_values()
+        if not data:
+            self.reservations = pd.DataFrame(columns=["Name", "Date", "Time", "Number of Guests"])  # Adjust column names if needed
+        else:
+            self.reservations = pd.DataFrame(data[1:], columns=data[0])
          # Convert the 'Date' column to datetime format
         self.reservations['Date'] = pd.to_datetime(self.reservations['Date'], format="%d-%m-%Y", errors='coerce')
         # Convert the 'Time' column to time format
         self.reservations["Time"] = pd.to_datetime(self.reservations["Time"], format="%H:%M", errors='coerce').dt.time
 
-    def save_reservations():
+    def save_reservations(self):
         # Create a copy of the reservations DataFrame to avoid modifying the original
         reservations_to_save = self.reservations.copy()
         # Check if the 'Date' column is already in datetime format
-    if not pd.api.types.is_datetime64_any_dtype(reservations_to_save['Date']):  
-        # If not, convert the 'Date' column to datetime, handling potential errors
-        reservations_to_save['Date'] = pd.to_datetime(reservations_to_save['Date'], errors='coerce')
-        # Format the 'Date' column to a string in the desired format (DD-MM-YYYY)
-    reservations_to_save['Date'] = reservations_to_save['Date'].dt.strftime('%d-%m-%Y')
-    # Format the 'Time' column to a string in the desired format (HH:MM) if it's not null, otherwise set it to an empty string
-    reservations_to_save['Time'] = reservations_to_save['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '') 
-    # Replace any NaN values in the DataFrame with empty strings
-    reservations_to_save.fillna('', inplace=True)  
-    # Update the Google Sheet with the modified DataFrame, including column headers
-    self.worksheet.update(
-        # Start updating from cell A1
-        range_name='A1',  
-        values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist() 
-    )
+        if not pd.api.types.is_datetime64_any_dtype(reservations_to_save['Date']):  
+            # If not, convert the 'Date' column to datetime, handling potential errors
+            reservations_to_save['Date'] = pd.to_datetime(reservations_to_save['Date'], errors='coerce')
+            # Format the 'Date' column to a string in the desired format (DD-MM-YYYY)
+        reservations_to_save['Date'] = reservations_to_save['Date'].dt.strftime('%d-%m-%Y')
+        # Format the 'Time' column to a string in the desired format (HH:MM) if it's not null, otherwise set it to an empty string
+        reservations_to_save['Time'] = reservations_to_save['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
+        # Replace any NaN values in the DataFrame with empty strings
+        reservations_to_save.fillna('', inplace=True)
+        # Update the Google Sheet with the modified DataFrame, including column headers
+        self.worksheet.update(
+            # Start updating from cell A1
+            range_name='A1',  
+            values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist() 
+        )
 
     def add_reservation(self):
         while True:
@@ -152,26 +156,52 @@ class ReservationManager:
             # Print the matching reservations, displaying only the 'Name', 'Date', 'Time', and 'Number of Guests' columns
             print(matching_reservations[['Name', 'Date', 'Time', 'Number of Guests']].to_string(index=False))
     
-        def delete_reservation(self):
-            # Display all existing reservations
-            self.view_reservations()
-             # Prompt the user to enter the name of the reservation they want to delete
-            name_to_delete = input("Enter the name of the reservation to delete: ")
-             # Filter the reservations DataFrame to find rows where the 'Name' column (case-insensitive) matches the entered name
-            matching_reservations = self.reservations[self.reservations["Name"].str.lower() == name_to_delete.lower()]
-            # Check if any matching reservations were found
-            if matching_reservations.empty:
-                 # If no matches, print a message indicating so
-                print("No reservations found matching the criteria.")
-            else:
-                # If matches were found:
-                # Drop the matching rows from the reservations DataFrame and reset the index
-                self.reservations = self.reservations.drop(matching_reservations.index).reset_index(drop=True)
-                # Save the updated reservations back to the data source
-                self.save_reservations()
-                 # Print a confirmation message indicating how many reservations were deleted and for which name
-                print(f"Deleted {len(matching_reservations)} reservation(s) for {name_to_delete}")
+    def delete_reservation(self):
+        # Display all existing reservations
+        self.view_reservations()
+        # Prompt the user to enter the name of the reservation they want to delete
+        name_to_delete = input("Enter the name of the reservation to delete: ")
+        # Filter the reservations DataFrame to find rows where the 'Name' column (case-insensitive) matches the entered name
+        matching_reservations = self.reservations[self.reservations["Name"].str.lower() == name_to_delete.lower()]
+        # Check if any matching reservations were found
+        if matching_reservations.empty:
+            # If no matches, print a message indicating so
+            print("No reservations found matching the criteria.")
+        else:
+            # If matches were found:
+            # Drop the matching rows from the reservations DataFrame and reset the index
+            self.reservations = self.reservations.drop(matching_reservations.index).reset_index(drop=True)
+            # Save the updated reservations back to the data source
+            self.save_reservations()
+            # Print a confirmation message indicating how many reservations were deleted and for which name
+            print(f"Deleted {len(matching_reservations)} reservation(s) for {name_to_delete}")
 
-
+        
 def main():
     reservation_manager = ReservationManager()
+
+    while True:
+        print("\nRestaurant Reservation System")
+        print("1. Add Reservation")
+        print("2. View Reservations")
+        print("3. Search Reservations")
+        print("4. Delete Reservation")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            reservation_manager.add_reservation()
+        elif choice == "2":
+            reservation_manager.view_reservations()
+        elif choice == "3":
+            reservation_manager.search_reservations()
+        elif choice == "4":
+            reservation_manager.delete_reservation()
+        elif choice == "5":
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 5.")
+
+if __name__ == "__main__":
+    main()
