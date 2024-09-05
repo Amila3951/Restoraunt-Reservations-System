@@ -153,14 +153,23 @@ class ReservationManager:
             print(matching_reservations[['Name', 'Date', 'Time', 'Number of Guests']].to_string(index=False))
     
         def delete_reservation(self):
+            # Display all existing reservations
             self.view_reservations()
+             # Prompt the user to enter the name of the reservation they want to delete
             name_to_delete = input("Enter the name of the reservation to delete: ")
+             # Filter the reservations DataFrame to find rows where the 'Name' column (case-insensitive) matches the entered name
             matching_reservations = self.reservations[self.reservations["Name"].str.lower() == name_to_delete.lower()]
+            # Check if any matching reservations were found
             if matching_reservations.empty:
+                 # If no matches, print a message indicating so
                 print("No reservations found matching the criteria.")
             else:
+                # If matches were found:
+                # Drop the matching rows from the reservations DataFrame and reset the index
                 self.reservations = self.reservations.drop(matching_reservations.index).reset_index(drop=True)
+                # Save the updated reservations back to the data source
                 self.save_reservations()
+                 # Print a confirmation message indicating how many reservations were deleted and for which name
                 print(f"Deleted {len(matching_reservations)} reservation(s) for {name_to_delete}")
 
 
