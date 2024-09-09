@@ -56,7 +56,7 @@ class ReservationManager:
 
     def add_reservation(self):
         while True:
-            name = input("Enter name: ")
+            name = input("Enter name:\n")
             # Check if the entered name already exists in the reservations
             if name.lower() in self.reservations["Name"].str.lower().values:
                 print("A reservation with this name already exists. Please enter a different name.")
@@ -65,7 +65,7 @@ class ReservationManager:
 
         while True:
             try:
-                date_str = input("Enter reservation date (DD-MM-YYYY): ")
+                date_str = input("Enter reservation date (DD-MM-YYYY):\n")
                 date = datetime.datetime.strptime(date_str, "%d-%m-%Y").date()
                 # Check if the entered date is in the past
                 if date < datetime.date.today():
@@ -77,7 +77,7 @@ class ReservationManager:
 
         while True:
                 try:
-                    time_str = input("Enter reservation time (HH:MM): ")
+                    time_str = input("Enter reservation time (HH:MM):\n")
                     time = datetime.datetime.strptime(time_str, "%H:%M").time()
                     # Check if the entered time is within operating hours (8:00 AM to 10:00 PM)
                     if time < datetime.time(8, 0) or time > datetime.time(22, 0):
@@ -89,7 +89,7 @@ class ReservationManager:
 
         while True:
             try:
-                number_of_guests = int(input("Enter number of guests: "))
+                number_of_guests = int(input("Enter number of guests:\n"))
                  # Check if the entered number of guests is positive
                 if number_of_guests <= 0:
                     raise ValueError("Number of guests must be positive.")
@@ -135,7 +135,7 @@ class ReservationManager:
             print(sorted_reservations[["Index", "Name", "Date", "Time", "Number of Guests"]].to_string(index=False))
 
     def search_reservations(self):
-        name = input("Enter the name to search for: ")
+        name = input("Enter the name to search for:\n")
         # Filter reservations where the 'Name' column contains the entered name (case-insensitive)
         matching_reservations = self.reservations[
             self.reservations["Name"].str.contains(name, case=False)
@@ -160,7 +160,7 @@ class ReservationManager:
         # Display all existing reservations
         self.view_reservations()
         # Prompt the user to enter the name of the reservation they want to delete
-        name_to_delete = input("Enter the name of the reservation to delete: ")
+        name_to_delete = input("Enter the name of the reservation to delete:\n")
         # Filter the reservations DataFrame to find rows where the 'Name' column (case-insensitive) matches the entered name
         matching_reservations = self.reservations[self.reservations["Name"].str.lower() == name_to_delete.lower()]
         # Check if any matching reservations were found
@@ -188,7 +188,7 @@ def main():
         print("4. Delete Reservation")
         print("5. Exit")
         # Takes input from the user - their choice of option from the menu
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice:\n")
         if choice == "1":
             reservation_manager.add_reservation()
         elif choice == "2":
