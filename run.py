@@ -47,11 +47,10 @@ class ReservationManager:
         reservations_to_save['Time'] = reservations_to_save['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
         # Replace any NaN values in the DataFrame with empty strings
         reservations_to_save.fillna('', inplace=True)
-        # Update the Google Sheet with the modified DataFrame, including column headers
+        self.worksheet.clear()
         self.worksheet.update(
-            # Start updating from cell A1
-            range_name='A1',  
-            values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist() 
+        range_name='A1', 
+        values=[reservations_to_save.columns.values.tolist()] + reservations_to_save.values.tolist()
         )
 
     def add_reservation(self):
