@@ -215,12 +215,6 @@ The following tests were performed to ensure the correctness and robustness of t
 - Automatic / Manual deploys (optional).
 - Click "Deploy Branch".
 
-### Specific Installations for This Code
-
-- `gspread`: Interacts with Google Sheets.
-- `google-auth`: Handles Google API authentication.
-- `pandas`: Data analysis and manipulation.
-
 ## Potential Future Enhancements
 
 The Restaurant Reservation Manager, while functional in its current state, holds potential for further improvements and feature additions to enhance its capabilities and user experience:
