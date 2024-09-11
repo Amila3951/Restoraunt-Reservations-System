@@ -61,6 +61,28 @@ The Restaurant Reservation Manager interacts with a Google Sheet to store and re
 5. **Exit:**
    - Gracefully terminates the application, allowing the user to exit the program cleanly.
 
+## Flowcharts
+
+main_menu:
+
+![Main Menu](Images/main_menu.png)
+
+add_reservation:
+
+![Add reservation](Images/add_reservation_flowchart.png)
+
+view_reservation:
+
+![View reservation](Images/view_reservations_flowchart.png)
+
+search_reservation:
+
+![Search reservation](Images/search_reservation_flowchart.png)
+
+delete_reservation:
+
+![Delete reservation](Images/delete_reservation_flowchart.png)
+
 ## Code Challenges and Solutions
 
 During the development of this application, a few challenges were encountered and addressed:
