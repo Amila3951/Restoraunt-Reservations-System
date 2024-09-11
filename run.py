@@ -75,16 +75,16 @@ class ReservationManager:
                 print(f"Invalid date format or past date: {e}")
 
         while True:
-            try:
-                time_str = input("Enter reservation time (HH:MM):\n")
-                time = datetime.datetime.strptime(time_str, "%H:%M").time()
-                # Check if the entered time is within operating hours (8:00 AM to 10:00 PM)
-                if time < datetime.time(8, 0) or time > datetime.time(22, 0):
-                    raise ValueError("Our hours of operation are from 8:00 AM to 10:00 PM. Please select a reservation time within this range.")
+                try:
+                    time_str = input("Enter reservation time (HH:MM):\n")
+                    time = datetime.datetime.strptime(time_str, "%H:%M").time()
+                    # Check if the entered time is within operating hours (8:00 AM to 10:00 PM)
+                    if time < datetime.time(8, 0) or time > datetime.time(22, 0):
+                        raise ValueError("Our hours of operation are from 8:00 AM to 10:00 PM. Please select a reservation time within this range.")
                     break
-            except ValueError as e:
-                # Print an error message if the time is invalid or outside operating hours
-                print(f"Invalid time format or outside operating hours: {e}")
+                except ValueError as e:
+                    # Print an error message if the time is invalid or outside operating hours
+                    print(f"Invalid time format or outside operating hours: {e}")
 
         while True:
             try:
