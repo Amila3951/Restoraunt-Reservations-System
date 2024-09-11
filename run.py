@@ -154,7 +154,7 @@ class ReservationManager:
             matching_reservations['Time'] = matching_reservations['Time'].apply(lambda x: x.strftime('%H:%M') if pd.notnull(x) else '')
             # Print the matching reservations, displaying only the 'Name', 'Date', 'Time', and 'Number of Guests' columns
             print(matching_reservations[['Name', 'Date', 'Time', 'Number of Guests']].to_string(index=False))
-            
+
     def delete_reservation(self):
         # Display all existing reservations
         self.view_reservations()
@@ -201,6 +201,6 @@ def main():
         # Prints an error message if the user enters an invalid choice
         else:
             print("Invalid choice. Please enter a number between 1 and 5.")
-# Checks if the script is being run as the main program
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    # Starts the main function of the program if the condition is met
+    main()
