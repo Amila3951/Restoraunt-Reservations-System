@@ -288,6 +288,7 @@ def main():
             reservation_manager.delete_reservation()
         # Exits the loop (and the program) if the user enters "5"
         elif choice == "5":
+            print("Goodbye!")
             break
         # Prints an error message if the user enters an invalid choice
         else:
